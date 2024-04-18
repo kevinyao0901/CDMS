@@ -45,8 +45,8 @@ def save_books_to_mongodb(cursor, collection):
 
 if __name__ == "__main__":
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["bookstore_db"]
-    mycol = mydb["book_lx"]
+    mydb = myclient["book"]
+    mycol = mydb["books"]
     mycol.drop()
     mycol.create_index([("id", 1)], unique=True)
     cursor = get_book_cursor()
