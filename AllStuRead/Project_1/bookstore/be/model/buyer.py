@@ -267,3 +267,66 @@ class Buyer(db_conn.DBConn):
             return 530, str(e)
 
         return 200, "ok"
+    
+#   def show_collection(self):
+
+#   def collect_book(self, book_id, store_id):
+
+#   def uncollect_book(self, book_id, store_id):
+
+
+#我在做一个书店网站的项目。我有一个Mongodb数据库，里面有三个collection分别是user、store和books，里面分别放着顾客、网店和书籍的信息。我现在想要增加一个收藏功能：通过在每个用户的数据里面存放一个（book_id, sotre_id）的数组来表示这个用户收藏了某个网店中的某个书籍。收藏功能提供三个接口：
+
+    def get_collection(self, user_id):
+        try:
+            user = self.conn["user"].find_one({'user_id': user_id})
+            if not user:
+                return error.error_non_exist_user_id(user_id)
+        except pymongo.errors.PyMongoError as e:
+            return 528, str(e)
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        
+        result = user.get('collections', [])
+        if not result:
+            return 200, "empty"
+        else:
+            return 200, "ok"
+
+    def collect_book(self, user_id, book_id):
+        try:
+            user = self.conn["user"].find_one({'user_id': user_id})
+            if not user:
+                return error.error_non_exist_user_id(user_id)
+            result = self.conn["user"].update_one(
+                {'user_id': user_id},
+                {'$addToSet': {'collections': book_id}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            return 528, str(e)
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        
+        if result.modified_count == 0:
+            return 200, "re-collect"
+        else:
+            return 200, "ok"
+
+    def uncollect_book(self, user_id, book_id):
+        try:
+            user = self.conn["user"].find_one({'user_id': user_id})
+            if not user:
+                return error.error_non_exist_user_id(user_id)
+            result = self.conn["user"].update_one(
+                {'user_id': user_id},
+                {'$pull': {'collections': book_id}}
+            )
+        except pymongo.errors.PyMongoError as e:
+            return 528, str(e)
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        
+        if result.modified_count == 0:
+            return 200, "not-collected-book"
+        else:
+            return 200, "ok"
