@@ -279,5 +279,54 @@ class User(db_conn.DBConn):
         except Exception as e:
             return 530, "{}".format(str(e))
 
+    def collect_book(self, user_id, book_id):
+        try:
+            # Check if the user exists in the collection
+            existing_user = self.conn['user'].find_one({"_id": user_id})
+            if not existing_user:
+                return error.error_non_exist_user_id(user_id)
+
+            # Check if the book and store combination is already in the user's collection
+            if (book_id) in existing_user.get("collection", []):
+                return error.error_exist_collection(book_id)
+
+            # Update the user's collection with the new book and store
+            self.conn['user'].update_one(
+                {"_id": user_id},
+                {"$addToSet": {"collection": (book_id)}}
+            )
+            return 200, "ok"
+        except pymongo.errors.PyMongoError as e:
+            return 528, str(e)
+
+    def uncollect_book(self, user_id, book_id, store_id):
+        try:
+            # Check if the user exists in the collection
+            existing_user = self.conn['user'].find_one({"_id": user_id})
+            if not existing_user:
+                return error.error_non_exist_user_id(user_id)
+
+            # Remove the specified book and store from the user's collection
+            self.conn['user'].update_one(
+                {"_id": user_id},
+                {"$pull": {"collection": (book_id, store_id)}}
+            )
+            return 200, "ok"
+        except pymongo.errors.PyMongoError as e:
+            return 528, str(e)
+
+    def get_collection(self, user_id):
+        try:
+            # Check if the user exists in the collection
+            existing_user = self.conn['user'].find_one({"_id": user_id})
+            if not existing_user:
+                return error.error_non_exist_user_id(user_id)
+
+            # Return the user's collection
+            collection = existing_user.get("collection", [])
+            return 200, collection
+        except pymongo.errors.PyMongoError as e:
+            return 528, str(e)
+
 
 # F
