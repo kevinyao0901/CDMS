@@ -31,3 +31,7 @@ temporary results:
 ## 4-23
 
 Work:Finish user.py and seller.py in be/model
+
+## 4-25
+
+Work:Finish buyer.py and seller.py in be/model
