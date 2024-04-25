@@ -9,7 +9,11 @@
 | Finish [user.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/model/user.py) and [seller.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/model/seller.py) | 2024/4/23  | translate sql3 into mongodb & try to add some new function | 1.0 |
 Finish [buyer.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/model/buyer.py) | 2024/4/25  | translate sql3 into mongodb & try to add some new function | 1.1 |
 
-
+updated [./be/model/buyer.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/model/buyer.py)  
+[./be/view/buyer.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/view/buyer.py)  
+[./fe/access/buyer.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/fe/access/buyer.py)   
+[./fe/test/test_collection.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore//fe/test/test_collection.py)  
+| 2024/4/25  | new functionality | 1.1 |
 
 ## 4-14
 
@@ -35,3 +39,9 @@ Work:Finish user.py and seller.py in be/model
 ## 4-25
 
 Work:Finish buyer.py and seller.py in be/model
+
+## 4-25
+
+The bookmarking feature has been launched.
+
+updated ./fe/test ./fe/
