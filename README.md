@@ -39,8 +39,16 @@ Work:Finish buyer.py and seller.py in be/model
 
 ## 4-25
 
+Work:Finish store.py be/model
+
+## 4-25
+
 Work:The bookmarking feature has been launched.Now you are able to search books & collect your favorite books. 
 
 updated ./fe/test/test_collection.py  ./fe/access/buyer.py ./be/model/buyer.py ./be/view/buyer.py
 
 ![error](./temp_result/4-25-1.png)
+
+## 4-30
+
+finish the report
