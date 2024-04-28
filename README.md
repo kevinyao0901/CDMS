@@ -10,7 +10,7 @@
 | Finish [buyer.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/model/buyer.py) | 2024/4/25  | translate sql3 into mongodb & try to add some new function | 1.1 |
 | Finish [store.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/model/store.py) | 2024/4/25  | translate sql3 into mongodb & try to add some new function | 1.1 |
 | updated [./be/model/buyer.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/model/buyer.py), [./be/view/buyer.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/be/view/buyer.py), [./fe/access/buyer.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore/fe/access/buyer.py), [./fe/test/test_collection.py](https://github.com/kevinyao0901/CDMS/blob/main/AllStuRead/Project_1/bookstore//fe/test/test_collection.py) | 2024/4/25  | new functionality | 1.2 |
-| check everything we've done&&write the report | 2024/4/30  |finish the project| 1.3 |
+| check everything we've done&&write the report | 2024/4/30  |finish the project| 1.2 |
 
 ## 4-14
 
