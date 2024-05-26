@@ -1,6 +1,0 @@
-INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-INFO:werkzeug:127.0.0.1 - - [25/Nov/2023 21:42:17] "GET /shutdown HTTP/1.1" 200 -
-INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-INFO:werkzeug:127.0.0.1 - - [26/Nov/2023 09:42:30] "GET /shutdown HTTP/1.1" 200 -
-INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-INFO:werkzeug:127.0.0.1 - - [26/Nov/2023 10:16:39] "GET /shutdown HTTP/1.1" 200 -
