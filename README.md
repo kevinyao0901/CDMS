@@ -15,7 +15,7 @@ Work:Create the repository,and modifying the v1.0 code,no code upload
 ## 5-29
 
 Work:confirm the code and run the test
-![error]()
+![error](./temp_result/reportv2.0.png)
 
 
 
