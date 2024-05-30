@@ -58,6 +58,12 @@ class Store:
                 "PRIMARY KEY(order_id, book_id))"
             )
 
+            cursor.execute(
+                "CREATE TABLE IF NOT EXISTS collections( "
+                "user_id TEXT, book_id TEXT,  "
+                "PRIMARY KEY(user_id, book_id))"
+            )
+            
             conn.commit()
         except psycopg2.Error as e:
             logging.error(e)
