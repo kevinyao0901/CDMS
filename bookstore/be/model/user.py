@@ -6,34 +6,6 @@ from be.model import error
 from be.model import db_conn
 import psycopg2
 
-# encode a json string like:
-#   {
-#       "user_id": [user name],
-#       "terminal": [terminal code],
-#       "timestamp": [ts]} to a JWT
-#   }
-
-
-def jwt_encode(user_id: str, terminal: str) -> str:
-    encoded = jwt.encode(
-        {"user_id": user_id, "terminal": terminal, "timestamp": time.time()},
-        key=user_id,
-        algorithm="HS256",
-    )
-    return encoded.encode("utf-8").decode("utf-8")
-
-
-# decode a JWT to a json string like:
-#   {
-#       "user_id": [user name],
-#       "terminal": [terminal code],
-#       "timestamp": [ts]} to a JWT
-#   }
-def jwt_decode(encoded_token, user_id: str) -> str:
-    decoded = jwt.decode(encoded_token, key=user_id, algorithms="HS256")
-    return decoded
-
-
 class User(db_conn.DBConn):
     token_lifetime: int = 3600  # 3600 second
 
@@ -44,7 +16,7 @@ class User(db_conn.DBConn):
         try:
             if db_token != token:
                 return False
-            jwt_text = jwt_decode(encoded_token=token, user_id=user_id)
+            jwt_text = self.jwt_decode(encoded_token=token, user_id=user_id)
             ts = jwt_text["timestamp"]
             if ts is not None:
                 now = time.time()
@@ -59,22 +31,23 @@ class User(db_conn.DBConn):
             return error.error_exist_user_id(user_id)
         try:
             terminal = "terminal_{}".format(str(time.time()))
-            token = jwt_encode(user_id, terminal)
             self.cur.execute(
                 'INSERT INTO "user"(user_id, password, balance, token, terminal) '
                 'VALUES (%s, %s, %s, %s, %s) RETURNING token;',
-                (user_id, password, 0, token, terminal),
+                (user_id, password, 0, self.jwt_encode(user_id, terminal), terminal),
             )
             self.conn.commit()
         except psycopg2.Error as e:
             return 528, str(e)
         finally:
-            self.cur.close()
-            self.conn.close()
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                self.conn.close()
         return 200, "ok"
 
     def check_token(self, user_id: str, token: str) -> (int, str):
-        cursor = self.cur.execute('SELECT token from "user" where user_id=%s', (user_id,))
+        self.cur.execute('SELECT token from "user" where user_id=%s', (user_id,))
         row = self.cur.fetchone()
         if row is None:
             return error.error_authorization_fail()
@@ -84,14 +57,9 @@ class User(db_conn.DBConn):
         return 200, "ok"
 
     def check_password(self, user_id: str, password: str) -> (int, str):
-        cursor = self.cur.execute(
-            'SELECT password from "user" where user_id=%s', (user_id,)
-        )
+        self.cur.execute('SELECT password from "user" where user_id=%s', (user_id,))
         row = self.cur.fetchone()
-        if row is None:
-            return error.error_authorization_fail()
-
-        if password != row[0]:
+        if (row is None) or (password != row[0]):
             return error.error_authorization_fail()
 
         return 200, "ok"
@@ -103,7 +71,7 @@ class User(db_conn.DBConn):
             if code != 200:
                 return code, message, ""
 
-            token = jwt_encode(user_id, terminal)
+            token = self.jwt_encode(user_id, terminal)
             self.cur.execute(
                 'UPDATE "user" SET (token, terminal) = (%s, %s) WHERE user_id = %s RETURNING token;',
                 (token, terminal, user_id),
@@ -125,9 +93,9 @@ class User(db_conn.DBConn):
                 return code, message
 
             terminal = "terminal_{}".format(str(time.time()))
-            dummy_token = jwt_encode(user_id, terminal)
+            dummy_token = self.jwt_encode(user_id, terminal)
 
-            cursor = self.cur.execute(
+            self.cur.execute(
                 'UPDATE "user" SET (token, terminal) = (%s, %s) WHERE user_id = %s RETURNING token;',
                 (dummy_token, terminal, user_id),
             )
@@ -150,7 +118,7 @@ class User(db_conn.DBConn):
             if code != 200:
                 return code, message
 
-            cursor = self.cur.execute('DELETE from "user" where user_id=%s', (user_id,))
+            self.cur.execute('DELETE from "user" where user_id=%s', (user_id,))
             if self.cur.rowcount == 1:
                 self.conn.commit()
             else:
@@ -173,8 +141,8 @@ class User(db_conn.DBConn):
                 return code, message
 
             terminal = "terminal_{}".format(str(time.time()))
-            token = jwt_encode(user_id, terminal)
-            cursor = self.cur.execute(
+            token = self.jwt_encode(user_id, terminal)
+            self.cur.execute(
                 'UPDATE "user" set (password, token, terminal) = (%s, %s, %s) where user_id = %s RETURNING token;',
                 (new_password, token, terminal, user_id),
             )
@@ -193,6 +161,8 @@ class User(db_conn.DBConn):
 
     def search_book(self, title='', content='', tag='', store_id=''):
         try:
+            # 建立数据库连接
+            book_db = "D:/db_project2/wen/project 2/bookstore/fe/data/book.db"
             cursor = self.conn.cursor()
 
             query_conditions = []
@@ -228,7 +198,6 @@ class User(db_conn.DBConn):
 
             # 构建查询字符串
             query_string = "SELECT * FROM book WHERE " + " AND ".join(query_conditions)
-            book_db = r"D:\programing\database\Proj2\CDMS\CDMS\AllStuRead\Project_2\bookstore\fe\data\book.db"
             conn = sqlite.connect(book_db)
             cursor = conn.execute(query_string, query_parameters)
 
@@ -248,3 +217,18 @@ class User(db_conn.DBConn):
             return 529, "No matching books found."
         else:
             return 200, "ok"
+        
+    def jwt_encode(self, user_id: str, terminal: str) -> str:
+        try:
+            payload = {"user_id": user_id, "terminal": terminal, "timestamp": time.time()}
+            encoded_token = jwt.encode(payload, key=user_id, algorithm="HS256").encode("utf-8")
+            return encoded_token.decode("utf-8")
+        except BaseException:
+            return None
+        
+    def jwt_decode(self, encoded_token, user_id: str) -> str:
+        try:
+            decoded = jwt.decode(encoded_token, key=user_id, algorithms="HS256")
+            return decoded
+        except BaseException:
+            return None        
