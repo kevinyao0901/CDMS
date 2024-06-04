@@ -11,4 +11,4 @@ To view the code and report of each project, go to the corresponding branches.
 | Project Name | Description                        | Type            | Status    
 |--------------|------------------------------------|-----------------|-----------
 | [proj1](https://github.com/kevinyao0901/CDMS/tree/Project1)        | Bookstore system using MongoDB       | Document Database | Completed 
-| [proj2](https://github.com/kevinyao0901/CDMS/tree/Project2)        | Bookstore system using PostgreSQL         | Relational Database | In Progress 
+| [proj2](https://github.com/kevinyao0901/CDMS/tree/Project2)        | Bookstore system using PostgreSQL         | Relational Database | Completed
